@@ -4,7 +4,7 @@ var taskIdCounter = 0
 
 var taskFormHandler = function(event) {
     event.preventDefault();
-    
+    //bruh
     var taskNameInput = document.querySelector("input[name='task-name']").value; 
     var taskTypeInput = document.querySelector("select[name='task-type']").value; 
 
