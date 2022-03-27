@@ -140,6 +140,9 @@ var editTask = function(taskId) {
 
     //changes add task button's text content
     document.querySelector('#save-task').textContent = "Save Changes";
+
+    //gives form the edited task's id
+    formEl.setAttribute("data-task-id", taskId);
 }
  
 formEl.addEventListener("submit", taskFormHandler);
