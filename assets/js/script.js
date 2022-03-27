@@ -5,7 +5,7 @@ var pageContentEl = document.querySelector("#page-content")
 
 var taskFormHandler = function(event) {
     event.preventDefault();
-    //bruh
+
     var taskNameInput = document.querySelector("input[name='task-name']").value; 
     var taskTypeInput = document.querySelector("select[name='task-type']").value; 
 
@@ -22,14 +22,24 @@ var taskFormHandler = function(event) {
 
     formEl.reset();
 
-    //package data as object
-    var taskDataObj = {
-        name: taskNameInput,
-        type :taskTypeInput
+    var isEdit = formEl.hasAttribute("data-task-id");
+
+    //if formEl has a  data attribute then the function along with the taskId are called
+    if (isEdit) {
+        var taskId = formEl.getAttribute("data-task-id");
+        completeEditTask(taskNameInput, taskTypeInput, taskId);
+    } 
+    //if formEl has no data attribute, the createTaskEl() will be called along with the form values
+    else {
+        //package data as object
+        var taskDataObj = {
+            name: taskNameInput,
+            type :taskTypeInput
+        };
+
+        // send taskDataObj to createTaskEL as an argument
+        createTaskEl(taskDataObj);
     };
-    
-    //send it to createTaskEL as an argument
-    createTaskEl(taskDataObj);
 };
 
 var createTaskEl = function(taskDataObj) {
@@ -101,6 +111,24 @@ var createTaskAction = function(taskId) {
     return actionContainerEl;
 }
 
+//function lets the user edit their tasks
+var completeEditTask = function(taskName, taskType, taskId) {
+    //finds the matching list item
+    var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']")
+
+    //gives task-item the new edited values 
+    taskSelected.querySelector("h3.task-name").textContent = taskName;
+    taskSelected.querySelector("span.task-type").textContent = taskType;
+
+    //was supposed to have a window alert but decided it was annoying and unnecessary 
+    // alert("Task Updated!")
+
+    //resets formEl
+    formEl.removeAttribute("data-task-id");
+    document.querySelector("#save-task").textContent = "Add Task";
+}
+
+//this function matches the different button id's to their corresponding function
 var taskButtonHandler = function(event) {
     //get element from event
     var targetEl = event.target;
@@ -123,17 +151,12 @@ var deleteTask = function (taskId) {
 };
 
 var editTask = function(taskId) {
-    console.log("editing task #" + taskId);
-
     //get task list item element 
     var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']");
 
     //get content from task name and type
     var taskName = taskSelected.querySelector("h3.task-name").textContent;
-    console.log(taskName);
     var taskType = taskSelected.querySelector("span.task-type").textContent;
-    console.log(taskType);
-
     //sending taskSelected name and type value back to the task-form
     document.querySelector("input[name='task-name']").value = taskName;
     document.querySelector("select[name='task-type']").value = taskType;
