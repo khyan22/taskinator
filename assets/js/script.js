@@ -4,6 +4,7 @@ var taskIdCounter = 0
 var pageContentEl = document.querySelector("#page-content")
 var taskInProgressEl = document.querySelector("#task-in-progress");
 var taskCompletedEl = document.querySelector("#task-completed");
+var tasks = [];
 
 var taskFormHandler = function(event) {
     event.preventDefault();
@@ -36,7 +37,8 @@ var taskFormHandler = function(event) {
         //package data as object
         var taskDataObj = {
             name: taskNameInput,
-            type :taskTypeInput
+            type :taskTypeInput,
+            status: "to do"
         };
 
         // send taskDataObj to createTaskEL as an argument
@@ -66,6 +68,9 @@ var createTaskEl = function(taskDataObj) {
 
     //add entire list item to list
     tasksToDoEl.appendChild(listItemEl);
+
+    taskDataObj.id = taskIdCounter;
+    tasks.push(taskDataObj);
 
     //increases the counter for every unique id 
     taskIdCounter++;
@@ -121,6 +126,14 @@ var completeEditTask = function(taskName, taskType, taskId) {
     //gives task-item the new edited values 
     taskSelected.querySelector("h3.task-name").textContent = taskName;
     taskSelected.querySelector("span.task-type").textContent = taskType;
+
+    //loops through tasks array and object with new content
+    for (var i = 0; i < tasks.length; i++) {
+        if (tasks[i].id === parseInt(taskId)) {
+            tasks[i].name = taskName;
+            tasks[i].type = taskType;
+        }
+    };
 
     //was supposed to have a window alert but decided it was annoying and unnecessary 
     // alert("Task Updated!")
@@ -189,6 +202,14 @@ var taskStatusChangeHandler = function(event) {
     } else if (statusValue === "completed") {
         taskCompletedEl.appendChild(taskSelected);
     }
+
+    //updates tasks in tasks array
+    for (var i = 0; i < tasks.length; i++){
+        if (tasks[i].id === parseInt(taskId)) {
+            tasks[i].status = statusValue;
+        }
+    };
+    console.log(tasks)
 }
 
 formEl.addEventListener("submit", taskFormHandler);
