@@ -72,6 +72,9 @@ var createTaskEl = function(taskDataObj) {
     taskDataObj.id = taskIdCounter;
     tasks.push(taskDataObj);
 
+    //saves data into localStorage
+    saveTasks()
+
     //increases the counter for every unique id 
     taskIdCounter++;
 };
@@ -135,6 +138,9 @@ var completeEditTask = function(taskName, taskType, taskId) {
         }
     };
 
+    //saves data into localStorage
+    saveTasks()
+
     //was supposed to have a window alert but decided it was annoying and unnecessary 
     // alert("Task Updated!")
 
@@ -163,6 +169,23 @@ var taskButtonHandler = function(event) {
 var deleteTask = function (taskId) {
      var taskSelected = document.querySelector(".task-item[data-task-id='" + taskId + "']"); 
     taskSelected.remove()
+
+    //create new array to hold updated lists of tasks
+    var updateTaskArr = [];
+
+    //loop through current tasks
+    for (var i = 0; i < tasks.length; i++) {
+        //if tasks[i].id doesn't match the value of taskId, let's keep that task and push it into a new array
+        if (tasks[i].id !== parseInt(taskId)) {
+            updateTaskArr.push(tasks[i]);
+        }
+    };
+
+    //reassign tasks array to be the same as updateTaskArr
+    tasks = updateTaskArr;
+
+    //saves data into localStorage
+    saveTasks()
 };
 
 var editTask = function(taskId) {
@@ -209,8 +232,16 @@ var taskStatusChangeHandler = function(event) {
             tasks[i].status = statusValue;
         }
     };
-    console.log(tasks)
+
+    //saves data into localStorage
+    saveTasks()
 }
+
+//saves data to local storage
+var saveTasks = function() {
+    localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
 
 formEl.addEventListener("submit", taskFormHandler);
 
