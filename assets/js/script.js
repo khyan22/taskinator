@@ -66,8 +66,17 @@ var createTaskEl = function(taskDataObj) {
     var taskActionEl = createTaskAction(taskIdCounter);
     listItemEl.appendChild(taskActionEl)
 
+
+
+    if (taskDataObj.status === "to do") {
+        tasksToDoEl.appendChild(listItemEl);
+    } else if (taskDataObj.status === "in progress") {
+        taskInProgressEl.appendChild(listItemEl);
+    } else if (taskDataObj.status === "completed") {
+        taskCompletedEl.appendChild(listItemEl);
+    }
     //add entire list item to list
-    tasksToDoEl.appendChild(listItemEl);
+    // tasksToDoEl.appendChild(listItemEl);
 
     taskDataObj.id = taskIdCounter;
     tasks.push(taskDataObj);
@@ -248,49 +257,23 @@ var loadTasks = function() {
     //localstorage.getItem(tasks)
     //use JSON.parse on tasks data
     // use a for loop to iterate through tasks and create task elements on the page
-    var tasks = localStorage.getItem("tasks");
+    var savedTasks = localStorage.getItem("tasks");
     console.log(tasks);
 
-    tasks = JSON.parse(tasks);
-    console.log(tasks);
-    for (var i = 0; i < tasks.length; i++) {
-        // console.log(tasks[i])
+    if (!tasks) {
+        tasks = [];
+        return false;
+    }
 
-        taskIdCounter = tasks[i].id;
-        console.log(tasks[i])
+    savedTasks = JSON.parse(savedTasks);
 
-        var listItemEl = document.createElement("li");
-        listItemEl.className = "task-item";
-        listItemEl.setAttribute("data-task-id", tasks[i].id);
-        
-
-        var taskInfoEl = document.createElement("div")
-        taskInfoEl.className = "task-info"
-        taskInfoEl.innerHTML = "<h3 class='task-name'>" + tasks[i].name + "</h3><span class='task-type'>" + tasks[i].type + "</span>";
-
-        listItemEl.appendChild(taskInfoEl);
-
-        var taskActionEl = createTaskAction(tasks[i].id);
-
-        listItemEl.appendChild(taskActionEl);
-
-        if (tasks[i].status === "to do") {
-            listItemEl.querySelector("select[name='status-change']").selectedIndex = 0;  
-            // debugger;
-            tasksToDoEl.appendChild(listItemEl);
-
-        }else if (tasks[i].status === "in progress") {
-            listItemEl.querySelector("select[name='status-change']").selectedIndex = 1;
-            taskInProgressEl.appendChild(listItemEl);
-        } else if (tasks[i].status === "complete") {
-            listItemEl.querySelector("select[name='status-change']").selectedIndex = 2;
-            tasksCompletedEl.appendChild(listItemEl);
-        }
-        taskIdCounter++;
-        saveTasks()
-        console.log(listItemEl);
+    //loop through savedTasks array
+    for (var i = 0; i < savedTasks.length; i++) {
+        // pass each task object into createTaskEl()
+        createTaskEl(savedTasks[i]);
     }
 }
+
 
 loadTasks()
 formEl.addEventListener("submit", taskFormHandler);
